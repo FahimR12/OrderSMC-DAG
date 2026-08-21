@@ -1,0 +1,9 @@
+cff-version: 1.2.0
+message: "If you use OrderSMC-DAG, please cite this software and the associated method paper."
+title: "OrderSMC-DAG: Scalable Bayesian Structure Learning"
+type: software
+authors:
+  - name: "OrderSMC-DAG contributors"
+version: 0.2.0
+date-released: 2026-07-10
+

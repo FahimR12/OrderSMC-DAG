@@ -1,0 +1,16 @@
+{
+  "ordersmc": {
+    "particles": 80,
+    "num_betas": 40,
+    "mh_steps": 5,
+    "mh_steps_resample": 10,
+    "screen_k": 12,
+    "max_parents": 2,
+    "pair_rescue_anchor_k": 6,
+    "pair_rescue_k": 12,
+    "parent_pool_max": 18,
+    "seed": 0,
+    "posterior_threshold": 0.7
+  }
+}
+

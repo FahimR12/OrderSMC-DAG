@@ -1,0 +1,11 @@
+variables:
+  treatment:
+    type: bin
+    cardinality: 2
+  symptom_group:
+    type: cat
+    cardinality: 4
+  biomarker:
+    type: con
+    cardinality: null
+

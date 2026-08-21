@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ordersmc-dag"
+version = "0.2.0"
+description = "Scalable Bayesian DAG structure learning with order-based sequential Monte Carlo"
+readme = "README.md"
+license = {file = "LICENSE"}
+requires-python = ">=3.10"
+dependencies = [
+    "networkx>=3.0",
+    "numpy>=1.24",
+    "pandas>=2.0",
+    "PyYAML>=6.0",
+    "scipy>=1.10",
+]
+
+[project.optional-dependencies]
+mpi = ["mpi4py>=3.1"]
+test = ["pytest>=7.0"]
+
+[project.scripts]
+ordersmc = "ordersmc.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+pythonpath = ["src"]

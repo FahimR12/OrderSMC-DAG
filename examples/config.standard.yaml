@@ -1,0 +1,23 @@
+ordersmc:
+  particles: 400
+  num_betas: 160
+  mh_steps: 20
+  mh_steps_resample: 50
+  resample_ess_frac: 0.5
+  screen_k: 16
+  max_parents: 2
+  keep_per_child: null
+  pair_rescue_anchor_k: 8
+  pair_rescue_k: 20
+  parent_pool_max: 24
+  triplet_rescue_pair_k: 0
+  triplet_rescue_k: 0
+  tail_edge_penalty_after: null
+  tail_edge_penalty: null
+  lam: 0.75
+  edge_penalty: 8.0
+  alpha: 1.0
+  tau: 3.0
+  seed: 202
+  posterior_threshold: 0.7
+
