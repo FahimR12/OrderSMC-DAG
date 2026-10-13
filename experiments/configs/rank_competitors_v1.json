@@ -1,0 +1,21 @@
+{
+  "schema": "ordersmc-rank-competitors-v1",
+  "status": "matched-development-comparison-not-confirmatory",
+  "master_seed": 20260925,
+  "score": "rank-native",
+  "noise_families": ["gaussian", "student_t_df3"],
+  "replicates": [0, 1, 2, 3],
+  "sample_sizes": [250, 1000, 5000],
+  "seeds_low_n": 8,
+  "seeds_high_n": 20,
+  "seeds_per_task": 5,
+  "methods": ["order-mcmc", "rev-mcmc", "partition-mcmc", "bnlearn-hc-shared-score", "bnlearn-tabu-shared-score"],
+  "mcmc_budgets_seconds": {"baseline": 300, "extended": 1200},
+  "extended_only_n": 5000,
+  "mcmc": {"iterations": 1000000000, "burnin": 0, "wall_burnin_fraction": 0.25, "order_thin": 50, "structure_thin": 10},
+  "orientation_display_threshold": 0.9,
+  "rmse_flags": {"mean": 0.012, "p95": 0.02},
+  "source_suite_sha256": "84a78ea03a511787988922978a9f0a55bf19d55b279ab9ddb89473df93552399",
+  "source_budget_plan_sha256": "cf0ba6adf93dc5df5765c73b7634d301eae1e7a08d339359991b6b25bce87481",
+  "interpretation": "Same observed data, local scores, parent families, edge penalty and graph summary. Order and structure targets remain distinct. Reuse completed SMC fits (8 seeds at n=250/1000; 20 seeds per budget at n=5000); no SMC refits or recovery-based tuning. Monotone variants are represented by one canonical target only after byte-level family-score equality. Longer MCMC budgets are fixed sensitivities, not equal-compute matches or automatic winners. HC/Tabu return point graphs and have no posterior reproducibility claim."
+}

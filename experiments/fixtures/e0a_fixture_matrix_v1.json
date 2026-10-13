@@ -1,0 +1,79 @@
+{
+  "schema": "ordersmc-e0a-fixture-matrix-v1",
+  "description": "Static, deterministic local-score fixtures. Data values are obtained only from the human-readable recipes below; no pseudo-random generator is used for matrix fixtures.",
+  "score_schema": {
+    "bdeu_equivalent_sample_size": 1.0,
+    "clg_coefficient_prior_sd": 3.0,
+    "clg_inverse_gamma_shape": 2.0,
+    "clg_inverse_gamma_scale": 1.0,
+    "glm_coefficient_prior_sd": 1.0,
+    "continuous_standardization": "population mean and population standard deviation computed on the fixture rows",
+    "softmax_contrasts": "orthonormal Helmert coordinates with an isotropic Normal prior"
+  },
+  "matrix_axes": {
+    "sample_sizes": [8, 20, 100],
+    "child_types": ["continuous", "binary", "categorical3", "categorical4"],
+    "parent_cells": [
+      {"parent_block": "none", "parent_count": 0},
+      {"parent_block": "discrete_only", "parent_count": 1},
+      {"parent_block": "discrete_only", "parent_count": 2},
+      {"parent_block": "continuous_only", "parent_count": 1},
+      {"parent_block": "continuous_only", "parent_count": 2},
+      {"parent_block": "mixed", "parent_count": 2}
+    ]
+  },
+  "data_recipe": {
+    "row_index": "i = 0,...,n-1",
+    "discrete_parent_1": "d1[i] = i mod 2",
+    "discrete_parent_2": "d2[i] = floor(i / 2) mod 3",
+    "continuous_parent_1": "x1 is linspace(-1.7,1.7,n) + 0.05*((i mod 3)-1)",
+    "continuous_parent_2": "x2[i] = sin(2*pi*(i+0.25)/n) + 0.03*((i mod 4)-1.5)",
+    "continuous_child": "yc[i] = 0.45*x1[i] - 0.30*x2[i] + 0.20*d1[i] + e[i mod 8], with e=[-0.31,0.12,0.27,-0.08,0.19,-0.24,0.06,-0.15]",
+    "binary_child": "yb repeats [0,1,0,1,1,0,1,0]",
+    "categorical3_child": "y3 repeats [0,1,2,1,0,2,1,0]",
+    "categorical4_child": "y4 repeats [0,1,2,3,1,0,3,2]"
+  },
+  "legacy_reference_data": {
+    "disc_parent": [0, 0, 1, 1, 0, 1, 0, 1],
+    "binary": [0, 1, 1, 1, 0, 0, 1, 0],
+    "category": [0, 1, 2, 1, 0, 2, 1, 0],
+    "continuous_parent": [-1.4, -0.9, -0.2, 0.1, 0.5, 0.8, 1.1, 1.7],
+    "continuous_child": [-0.8, -0.1, 0.2, 0.6, 0.5, 1.2, 1.4, 2.0]
+  },
+  "reference_anchors": [
+    {"fixture_id": "bdeu-binary-one-discrete-n8", "data_source": "legacy_reference_data", "reference": "closed_form_dirichlet_multinomial"},
+    {"fixture_id": "bdeu-cat3-two-discrete-n20", "data_source": "matrix_data_recipe", "reference": "closed_form_dirichlet_multinomial"},
+    {"fixture_id": "bdeu-cat4-two-discrete-n100", "data_source": "matrix_data_recipe", "reference": "closed_form_dirichlet_multinomial"},
+    {"fixture_id": "nig-continuous-no-parent-n8", "data_source": "matrix_data_recipe", "reference": "determinant_schur"},
+    {"fixture_id": "nig-continuous-one-continuous-n8", "data_source": "legacy_reference_data", "reference": "determinant_schur_and_scalar_quadrature"},
+    {"fixture_id": "nig-continuous-mixed-n20", "data_source": "matrix_data_recipe", "reference": "contextwise_determinant_schur"},
+    {"fixture_id": "logit-binary-one-continuous-n8", "data_source": "legacy_reference_data", "reference": "adaptive_finite_cube_cubature"},
+    {"fixture_id": "logit-binary-two-continuous-n20", "data_source": "matrix_data_recipe", "reference": "adaptive_finite_cube_cubature"},
+    {"fixture_id": "softmax-cat3-one-continuous-n8", "data_source": "legacy_reference_data", "reference": "adaptive_gauss_hermite_and_multivariate_t_importance_sampling"}
+  ],
+  "pathology_fixtures": [
+    {"fixture_id": "binary-separated-n20", "pathology": "separation", "expected_policy": "finite_proper_prior_score"},
+    {"fixture_id": "continuous-nearly-singular-n20", "pathology": "nearly_singular", "expected_policy": "finite_proper_prior_score"},
+    {"fixture_id": "categorical4-rare-category-n100", "pathology": "rare_category", "expected_policy": "finite_proper_prior_score"},
+    {"fixture_id": "categorical4-empty-category-n20", "pathology": "empty_category", "expected_policy": "finite_proper_prior_score"},
+    {"fixture_id": "continuous-constant-predictor-n8", "pathology": "constant_predictor", "expected_policy": "ValueError"},
+    {"fixture_id": "continuous-collinear-parents-n20", "pathology": "collinearity", "expected_policy": "finite_proper_prior_score"},
+    {"fixture_id": "dg-singular-covariance-n20", "pathology": "singular_dg_covariance", "expected_policy": "ValueError"},
+    {"fixture_id": "nonfinite-continuous-n8", "pathology": "nonfinite_input", "expected_policy": "ValueError"}
+  ],
+  "transformations": [
+    {"transformation_id": "row-reversal", "scope": "all_reference_anchors", "expected": "score_invariant"},
+    {"transformation_id": "fixed-row-permutation", "permutation_recipe": "even row indices followed by odd row indices", "scope": "all_reference_anchors", "expected": "score_invariant"},
+    {"transformation_id": "parent-column-reversal", "scope": "two-parent_fixtures", "expected": "score_invariant"},
+    {"transformation_id": "category3-label-cycle", "mapping": [1, 2, 0], "scope": "categorical3_child", "expected": "score_invariant"},
+    {"transformation_id": "category4-label-permutation", "mapping": [2, 0, 3, 1], "scope": "categorical4_child", "expected": "score_invariant"},
+    {"transformation_id": "softmax-contrast-rotation", "matrix": [[0.6, -0.8], [0.8, 0.6]], "scope": "softmax_cat3", "expected": "laplace_score_invariant"}
+  ],
+  "branch_boundary_audit": {
+    "fixture_id": "binary-discrete-to-mixed-null-parent",
+    "replicates": 128,
+    "seed": 20260807,
+    "generator": "contextwise Beta-Bernoulli prior predictive with alpha=1 and an independent standard-Normal null continuous parent",
+    "reported_quantities": ["bdeu_log_score", "logit_log_score", "log_bayes_factor_difference", "finite_rate"]
+  }
+}

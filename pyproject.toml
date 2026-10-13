@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "ordersmc-dag"
-version = "0.2.0"
+version = "0.7.0"
 description = "Scalable Bayesian DAG structure learning with order-based sequential Monte Carlo"
 readme = "README.md"
 license = {file = "LICENSE"}
@@ -20,6 +20,7 @@ dependencies = [
 [project.optional-dependencies]
 mpi = ["mpi4py>=3.1"]
 test = ["pytest>=7.0"]
+validation = ["pgmpy==0.1.25", "tqdm>=4.66,<5"]
 
 [project.scripts]
 ordersmc = "ordersmc.cli:main"

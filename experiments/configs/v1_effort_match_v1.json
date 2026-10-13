@@ -1,0 +1,20 @@
+{
+  "schema": "ordersmc-v1-effort-match-config-v1",
+  "status": "paired-development-budget-diagnostic-not-new-confirmation",
+  "source": "results/sampler-corrections/v07-catchup-v1",
+  "source_plan_sha256": "42447bfc9eca1357107d879cd5baf603ea31ba9f556f806768461e680f5549fe",
+  "cohort": "v1",
+  "rule": "extra_steps = (legacy_total_proposed_moves - adaptive_total_proposed_moves) / particles",
+  "primary_arm": "adaptive_matched_effort",
+  "seeds_per_task": 4,
+  "concurrency": 12,
+  "notes": [
+    "Every original V1 dataset and inference seed is retained; no selection by RMSE, recovery or agreement.",
+    "Only history proposal counts set the top-up. No score, structural prior, particle count, proposal mixture, CESS target or MPI layout changes.",
+    "Replay snapshot zero must reproduce the completed adaptive run and its schedule before the top-up is accepted.",
+    "The top-up uses the existing invariant MH kernel at beta=1, without changing weights, temperature or the final posterior target.",
+    "This matches proposed moves, not acceptance counts, placement of moves along the bridge, elapsed time or total computational cost.",
+    "Compare legacy, adaptive untopped and effort-matched arms, plus unchanged Order MCMC. Report accuracy and independent-seed stability even if they worsen.",
+    "This is a diagnostic budget policy, not an automatically promoted package default. All existing catch-up jobs remain unchanged."
+  ]
+}

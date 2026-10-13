@@ -1,0 +1,67 @@
+{
+  "schema": "ordersmc-execution-config-v9",
+  "status": "resource-and-calibration-pilot-not-confirmatory",
+  "notes": [
+    "The protein-pathway pilot must be audited before a confirmatory freeze is created.",
+    "Generator scale selection uses metadata fidelity only and never graph recovery.",
+    "The 64-rank allocation accelerates individual fits and is not an MPI speedup comparison.",
+    "M4 uses affine Gaussian continuous mechanisms and restricted clg-bic. Unrestricted and non-Gaussian panels retain native scoring. Version 1 prepared results must not be reused."
+  ],
+  "generator": {
+    "pilot_size": 2000,
+    "female_prevalence": 0.5
+  },
+  "prior": {
+    "order_lambda": 1,
+    "structure_lambda": 1
+  },
+  "candidate": {
+    "max_parents": 2,
+    "screen_k": 30,
+    "parent_pool_max": 40,
+    "pair_rescue_anchor_k": 10,
+    "pair_rescue_k": 30,
+    "triplet_rescue_pair_k": 0,
+    "triplet_rescue_k": 0
+  },
+  "ordersmc": {
+    "particles": 2048,
+    "num_betas": 100,
+    "mh_steps": 10,
+    "mh_steps_resample": 25,
+    "resample_ess_frac": 0.5,
+    "posterior_threshold": 0.5
+  },
+  "mcmc": {
+    "maximum_iterations": 1000000000,
+    "burnin_fraction": 0.25,
+    "order_thin": 50,
+    "structure_thin": 10,
+    "order_sampling_wall_fraction": 0.9,
+    "rev_probability": 0.06666666666666667
+  },
+  "budgets_seconds": {
+    "e2": 1200,
+    "e3": [
+      300,
+      600,
+      1200
+    ],
+    "reference": 2400
+  },
+  "smoke": {
+    "pilot_size": 300,
+    "particles": 128,
+    "num_betas": 24,
+    "mh_steps": 3,
+    "mh_steps_resample": 6,
+    "mcmc_iterations": 300,
+    "mcmc_burnin": 60,
+    "mcmc_thin": 2,
+    "wall_seconds": null
+  },
+  "metadata_score_policy": {
+    "default": "native",
+    "gaussian_cg_compatible": "clg-bic"
+  }
+}

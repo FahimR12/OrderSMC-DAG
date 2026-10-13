@@ -1,0 +1,73 @@
+{
+  "schema": "ordersmc-execution-config-v9",
+  "status": "corrective-validation-frozen",
+  "notes": [
+    "Corrective validation declared on 2026-09-14 after diagnosing misspecification of the legacy native mixed score on the restricted conditional-Gaussian benchmark.",
+    "The graph-recovery outcomes from the earlier V3 run were inspected before this correction; this cohort must therefore be reported as corrective validation, not untouched confirmation.",
+    "The score is selected from the declared statistical model class, never from the benchmark or dataset name.",
+    "Restricted CLG-BIC has no fitted score hyperparameters: it uses local maximum likelihood and the ordinary 0.5*k*log(n) BIC penalty.",
+    "Candidate screening, structure prior, SMC schedule, MCMC controls, and compute allocations are unchanged from execution_v3_confirmatory_v1.json.",
+    "The held-out full-cohort master seed is 20260917; operational smoke uses 20260916. The d=8 panel is exactly enumerated and tests sampling against the corrected target as well as graph recovery and seed stability."
+  ],
+  "model_class_scores": {
+    "native_mixed_conditional_gaussian": "clg-bic"
+  },
+  "v3_high_indegree_candidate": {
+    "screen_k": 10,
+    "parent_pool_max": 15
+  },
+  "generator": {
+    "max_extreme_probability_fraction": 0.01,
+    "enforce_extreme_probability_fraction": false
+  },
+  "prior": {
+    "order_lambda": 1.0,
+    "structure_lambda": 1.0
+  },
+  "candidate": {
+    "max_parents": 3,
+    "screen_k": 20,
+    "parent_pool_max": 30,
+    "pair_rescue_anchor_k": 8,
+    "pair_rescue_k": 20,
+    "triplet_rescue_pair_k": 0,
+    "triplet_rescue_k": 0
+  },
+  "ordersmc": {
+    "particles": 4096,
+    "num_betas": 100,
+    "mh_steps": 10,
+    "mh_steps_resample": 25,
+    "resample_ess_frac": 0.5,
+    "posterior_threshold": 0.5
+  },
+  "mcmc": {
+    "maximum_iterations": 1000000000,
+    "burnin_fraction": 0.25,
+    "order_thin": 50,
+    "structure_thin": 10,
+    "order_sampling_wall_fraction": 0.9,
+    "rev_probability": 0.06666666666666667
+  },
+  "budgets_seconds": {
+    "e2": 300,
+    "e3": [
+      30,
+      60,
+      180,
+      300
+    ],
+    "reference": 1200
+  },
+  "smoke": {
+    "pilot_size": 300,
+    "particles": 256,
+    "num_betas": 24,
+    "mh_steps": 3,
+    "mh_steps_resample": 6,
+    "mcmc_iterations": 300,
+    "mcmc_burnin": 60,
+    "mcmc_thin": 2,
+    "wall_seconds": null
+  }
+}

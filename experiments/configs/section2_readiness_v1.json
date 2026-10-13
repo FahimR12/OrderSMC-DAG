@@ -1,0 +1,40 @@
+{
+  "schema": "ordersmc-section2-readiness-v1",
+  "status": "exploratory-score-transition-not-confirmatory",
+  "master_seed": 20260918,
+  "replicates": 10,
+  "dimension": 8,
+  "sample_sizes": [250, 1000, 5000],
+  "variants": ["unrestricted_native", "paired_nongaussian"],
+  "method_seeds": 4,
+  "mpi_ranks": 64,
+  "ordersmc": {
+    "particles": 4096,
+    "num_betas": 100,
+    "mh_steps": 10,
+    "mh_steps_resample": 25
+  },
+  "score_method": "native",
+  "edge_prior_lambda": 1.0,
+  "maximum_indegree": 2,
+  "candidate_policy": "all possible families up to maximum indegree",
+  "transform": "sinh(1.25 * asinh(x) + 0.5) on each continuous column; discrete columns unchanged",
+  "pairing": "same graph, coefficients, discrete observations and base random draws; smaller n is a row prefix of the n=5000 sample",
+  "reference": "exact order posterior for SMC error; positive log-space exact structure posterior to expose ordering-prior effects",
+  "selection_uses_graph_recovery": false,
+  "generator": {
+    "graph_family": "random_order",
+    "expected_indegree": 1.5,
+    "signal_strength": "moderate",
+    "variable_type_regime": "balanced_mixed",
+    "require_all_cross_type_directions": true,
+    "cross_type_minimum": 0.5,
+    "enforce_extreme_probability_fraction": false,
+    "pilot_size": 5000
+  },
+  "diagnostic_flags": {
+    "mean_smc_own_target_pip_rmse": 0.012,
+    "p95_smc_own_target_pip_rmse": 0.02
+  },
+  "interpretation": "Fixed settings, no tuning. Recovery is reported even when poor. Exact-posterior deterioration implicates the score/prior/model, not automatically the sampler. Non-Gaussian transformation deliberately tests misspecification; it is not a claim of a matched likelihood. CLG is assessed separately in the completed corrected V3 cohort."
+}

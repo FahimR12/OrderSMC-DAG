@@ -1,0 +1,37 @@
+{
+  "schema": "ordersmc-v07-catchup-config-v1",
+  "status": "corrective-rerun-of-previously-observed-development-and-validation-cohorts",
+  "source_cohorts": {
+    "v1": "results/brain-study/v1/seed-20260904-full",
+    "v3_mixed": "results/brain-study/v3/seed-20260904-full",
+    "v3_clg": "results/brain-study/v3-clg-score-v1/seed-20260917-full",
+    "metadata": "results/section2-v3/seed-20260923-pilot"
+  },
+  "rank_validation": "results/rank-validation/20260917-v1",
+  "rank_budget": "results/rank-budget/20260917-pilot-v1",
+  "rank_competitors": "results/rank-competitors/20260917-pilot-v1",
+  "correction_pilot": "results/sampler-corrections/v07-pilot-v1",
+  "correction_pilot_plan_sha256": "af08dfde6014676011135e4028e6327a2753fc0699a5612547e750e093efabb3",
+  "bridge": {
+    "tempering_path": "geometric",
+    "adaptive_tempering": true,
+    "adaptive_cess_target": 0.9,
+    "adaptive_min_beta_increment": 1e-8,
+    "adaptive_max_stages": 2000
+  },
+  "primary_snapshot_steps": 0,
+  "metadata_snapshot_steps": [0, 250, 1000],
+  "seeds_per_task": 4,
+  "mpi_concurrency_per_cohort": 2,
+  "serial_concurrency": 12,
+  "exact_rmse_flags": {"mean": 0.012, "p95": 0.02},
+  "notes": [
+    "Same observations, candidate families, local scores, priors, particles, stage-wise MH counts, method seeds and MPI layout as each original cohort. Correct the bridge and actual MPI proposal mixture.",
+    "Metadata primary comparison uses snapshot zero, before additional final-target moves. Report 250 and 1000 proposals per particle as prespecified sensitivity analyses, not retrospectively selected winners.",
+    "M1 evaluation remains seeds 0-3; reproducibility additionally includes seeds 4-7. Do not compare an eight-seed mean to a four-seed competitor mean.",
+    "Reuse the 16 geometric pilot fits rather than duplicate them. The 16 proposal-only pilot fits are separate ablations.",
+    "V3's 60 misspecified legacy native-CLG datasets are superseded by the completed CLG-BIC corrective cohort. Earlier smoke, tuning and failed-calibration cohorts stay historical.",
+    "The 120 historical rank exact-only conditions need no new SMC fits; retain them as frozen model diagnostics.",
+    "No score or prior tuning against graph truth. No equal-time, speedup, independent-confirmation or automatic publication-readiness claim."
+  ]
+}

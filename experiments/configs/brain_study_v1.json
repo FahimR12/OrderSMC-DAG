@@ -1,0 +1,172 @@
+{
+  "schema": "ordersmc-brain-study-design-v1",
+  "status": "design-review",
+  "study_version": "1.1",
+  "pilot_master_seed": 20260903,
+  "confirmatory_master_seed": 20260904,
+  "profiles": {
+    "smoke": {"datasets_per_cell": 1, "method_seeds": 1},
+    "pilot": {"datasets_per_cell": 3, "method_seeds": 2},
+    "full_v1": {"datasets_per_cell": 10, "method_seeds": 4},
+    "full_v2_v3": {"datasets_per_cell": 20, "method_seeds": 4}
+  },
+  "v1_exact": {
+    "dimensions": [8, 12],
+    "n_over_d": [20],
+    "variable_type_regimes": ["balanced_mixed", "continuous_dominant_mixed", "discrete_dominant_mixed"],
+    "expected_indegree": 1.5,
+    "max_indegree": 2,
+    "signal": "moderate",
+    "candidate_policy": "complete",
+    "methods": ["exact-order-dp", "ordersmc", "order-mcmc"],
+    "primary_metric": "directed_pip_rmse_to_exact_order",
+    "pass_gate": {
+      "each_cell_mean_rmse_max": 0.012,
+      "each_cell_empirical_p95_rmse_max": 0.02,
+      "each_cell_completion_rate_min": 0.95
+    },
+    "sample_size_supplement": {
+      "dimension": 12,
+      "n_over_d": [5, 10, 20, 50],
+      "variable_type_regime": "balanced_mixed"
+    }
+  },
+  "v2_brain_matched_synthetic": {
+    "status": "awaiting-brain-metadata-freeze",
+    "reference_grid": {
+      "dimension_baseline": [20, 50, 100],
+      "n_over_d_baseline": 20,
+      "sample_size_at_d50": [5, 10, 20, 50],
+      "topology_at_d50": ["random_order", "hub", "modular"],
+      "signal_at_d50": ["weak", "moderate", "strong"],
+      "continuous_noise_at_d50": ["gaussian", "student_t_df3", "student_t_df5", "centered_gamma_shape1_scale2"],
+      "mixed_null_graph_at_d50": true
+    },
+    "primary_variable_type_regime": "brain_matched",
+    "preprofile_pilot_surrogate": "balanced_mixed",
+    "type_regime_sensitivity_at_baseline": ["balanced_mixed", "continuous_dominant_mixed", "discrete_dominant_mixed"],
+    "methods": ["ordersmc", "order-mcmc", "partition-mcmc", "rev-mcmc"],
+    "optional_adapter_gated_methods": ["bnlearn-clg", "dag-gflownet-mixed-score", "bcdnets", "pc-mixed", "fci-mixed", "ges-mixed"],
+    "homogeneous_adapter_controls_not_primary_experiments": ["dagma-l2", "dagma-logistic"],
+    "candidate_complete_family_recall_min": 0.95,
+    "same_target_competitiveness": {
+      "skeleton_f1_difference_lower_95_bound_min": -0.05,
+      "directed_cross_type_f1_difference_lower_95_bound_min": -0.05
+    },
+    "speed_claim": {"runtime_ratio_upper_95_bound_max": 1.0}
+  },
+  "v3_known_networks": {
+    "source": "bnlearn-bayesian-network-repository",
+    "require_content_sha256": true,
+    "methods": [
+      "ordersmc",
+      "order-mcmc",
+      "partition-mcmc",
+      "rev-mcmc",
+      "bnlearn-hc-bic-cg",
+      "bnlearn-tabu-bic-cg",
+      "bnlearn-hc-shared-score",
+      "bnlearn-tabu-shared-score"
+    ],
+    "native_bnlearn_scope": "clgaussian.test only",
+    "shared_score_label": "bnlearn search + OrderSMC score",
+    "restricted_native_mixed_networks": [
+      {"id": "clgaussian.test", "nodes": 8, "kind": "native_mixed_conditional_gaussian", "sample_sizes": [250, 1000, 5000]}
+    ],
+    "topology_preserving_mixed_networks": [
+      {"id": "asia", "nodes": 8, "sample_sizes": [250, 1000]},
+      {"id": "insurance", "nodes": 27, "sample_sizes": [500, 2000, 10000]},
+      {"id": "alarm", "nodes": 37, "sample_sizes": [500, 2000, 10000]},
+      {"id": "hailfinder", "nodes": 56, "sample_sizes": [1000, 5000, 20000]}
+    ],
+    "sachs": {
+      "status": "blocked-until-intervention-aware-adapter-passes",
+      "pool_intervention_rows_as_observational": false
+    }
+  },
+  "g1_comparator_capability": {
+    "methods": [
+      "ordersmc",
+      "order-mcmc",
+      "partition-mcmc",
+      "rev-mcmc",
+      "bnlearn-clg",
+      "dagma",
+      "bcdnets",
+      "dag-gflownet-mixed-score",
+      "pc-mixed",
+      "fci-mixed",
+      "ges-mixed"
+    ],
+    "required_mixed_motifs": [
+      "continuous_to_binary",
+      "continuous_to_categorical",
+      "binary_to_continuous",
+      "categorical_to_continuous",
+      "binary_to_categorical",
+      "categorical_to_binary",
+      "mixed_parents_to_continuous",
+      "mixed_parents_to_binary",
+      "mixed_parents_to_categorical"
+    ],
+    "homogeneous_installation_controls": ["continuous", "binary"],
+    "dispositions": [
+      "supported_complete",
+      "supported_runtime_failure",
+      "supported_numerical_failure",
+      "unsupported_model_class",
+      "unavailable_adapter"
+    ],
+    "unsupported_cells_receive_accuracy_zero": false,
+    "dagma_scope": "homogeneous continuous l2 or homogeneous binary logistic control only",
+    "bnlearn_scope": "conditional Gaussian; discrete children cannot have continuous parents"
+  },
+  "v4_living_brain": {
+    "status": "blocked-until-brain-data-profile-complete",
+    "profile": "brain_data_profile.json",
+    "raw_time_series_requires_dynamic_adapter": true,
+    "biological_replicates": ["subject", "animal"],
+    "prohibited_replication_unit": "time_point_within_subject"
+  },
+  "statistics": {
+    "bootstrap_repetitions": 10000,
+    "confidence": 0.95,
+    "resampling_unit": "whole_dataset_within_cell",
+    "method_seeds_nested_within_dataset": true,
+    "macro_average": "equal_cell_weight"
+  },
+  "evaluation_metrics": {
+    "source_template": "DAGBagM, doi:10.1186/s12859-022-04864-y",
+    "headline_graph_recovery": {
+      "skeleton": ["tpr", "fdr", "f1"],
+      "directed_cross_type": ["tpr", "fdr", "f1"],
+      "reporting": "mean_and_sd_across_datasets_after_averaging_method_seeds"
+    },
+    "definitions": {
+      "tpr": "tp/(tp+fn)",
+      "fdr": "fp/max(1,tp+fp)",
+      "f1": "2*tp/(2*tp+fp+fn)",
+      "directed_reversal": "one_false_positive_plus_one_false_negative",
+      "empty_true_graph": "report_false_edge_count; tpr_and_f1_undefined"
+    },
+    "posterior_secondary": [
+      "directed_auprc",
+      "skeleton_auprc",
+      "directed_brier",
+      "skeleton_brier",
+      "posterior_expected_pair_state_shd"
+    ],
+    "mixed_type_strata": {
+      "primary": "all_directed_edges_with_different_parent_and_child_types",
+      "ordered_cross_type_directions": 6,
+      "all_parent_child_type_combinations": 9
+    },
+    "negative_control": ["selected_false_skeleton_edges", "selected_false_directed_edges"],
+    "computational": ["sampling_runtime_seconds", "end_to_end_runtime_seconds", "peak_memory_bytes", "completion_rate"],
+    "uncertainty": {
+      "bootstrap_repetitions": 10000,
+      "resampling_unit": "whole_dataset_within_cell",
+      "method_seeds_are_repeated_measurements": true
+    }
+  }
+}

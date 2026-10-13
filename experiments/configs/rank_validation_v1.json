@@ -1,0 +1,20 @@
+{
+  "schema": "ordersmc-rank-validation-v1",
+  "status": "development-validation-not-confirmatory-paper-results",
+  "replay_master_seed": 20260918,
+  "replay_replicates": 10,
+  "fresh_master_seed": 20260919,
+  "fresh_replicates_per_noise": 4,
+  "fresh_noise_families": ["gaussian", "student_t_df3"],
+  "score_methods": ["native", "rank-native"],
+  "sample_sizes": [250, 1000, 5000],
+  "method_seeds": 8,
+  "mpi_ranks": 64,
+  "paired_method_seeds": true,
+  "rank_transform": "Phi^-1((average_rank-0.5)/n), followed by population standardization; continuous columns only; training subset only",
+  "hyperparameter_search": false,
+  "automatic_default_change": false,
+  "metrics": ["directed_f1", "skeleton_f1", "directed_auprc", "directed_brier", "own_target_pip_rmse", "directed_graph_jaccard", "skeleton_graph_jaccard", "uncertainty_display_jaccard", "direction_coverage"],
+  "orientation_display_threshold": 0.9,
+  "interpretation": "Exact-reference replay is exploratory and all ten historical graphs are retained. Fresh Gaussian and Student-t mechanisms use an independent seed; each has its paired monotone measurement transform. Rank-mode equality across that transform is algebraic, not independent evidence of recovery. Native and rank-native use the same priors, all parent families, SMC budget and paired random seeds. All failures remain reported. Eight seeds are a bounded reproducibility pilot, not a claim of universal stability."
+}

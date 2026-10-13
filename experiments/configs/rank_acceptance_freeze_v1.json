@@ -1,0 +1,14 @@
+{
+  "schema": "ordersmc-accepted-rank-development-freeze-v1",
+  "status": "user-accepted-development-evidence-not-confirmatory",
+  "rank_suite_sha256": "84a78ea03a511787988922978a9f0a55bf19d55b279ab9ddb89473df93552399",
+  "budget_plan_sha256": "cf0ba6adf93dc5df5765c73b7634d301eae1e7a08d339359991b6b25bce87481",
+  "section2_score_policy": {"default": "rank-native", "gaussian_cg_compatible": "clg-bic"},
+  "primary_ordersmc": {"particles": 4096, "num_betas": 100, "mh_steps": 10, "mh_steps_resample": 25, "resample_ess_frac": 0.5},
+  "high_precision_reference": {"particles": 16384, "num_betas": 100, "mh_steps": 20, "mh_steps_resample": 50},
+  "prior": {"order_lambda": 1.0, "structure_lambda": 1.0},
+  "uncertainty_display_threshold": 0.9,
+  "mpi_ranks_per_fit": 64,
+  "package_default_changed": false,
+  "interpretation": "Use rank-native explicitly for revised unrestricted metadata pilot; retain native for historical reproduction and clg-bic for genuinely restricted Gaussian mechanisms. Extended budget remains a high-precision reference, not an automatic requirement for every metadata fit. Do not claim uniform fully directed graph reproducibility or identifiable directions near 50/50."
+}

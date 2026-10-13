@@ -1,0 +1,47 @@
+{
+  "schema": "ordersmc-pilot-freeze-v3",
+  "status": "confirmatory-frozen",
+  "frozen_utc": "2026-08-14T17:24:19Z",
+  "master_seed": 20260814,
+  "confirmatory_master_seed": 20260815,
+  "pilot": {
+    "id": "e1-tuning-v1",
+    "source": "results/v3/pilots/e1-tuning-v1/seed-20260814",
+    "datasets": "replicates 0, 1, and 2 at each of d=8 and d=12",
+    "method_seeds": [0, 1],
+    "planned_runs": 60,
+    "completed_runs": 60,
+    "failed_runs": 0,
+    "plan_sha256": "04414fb7c447640380cd767c7d41a31802ba6f65458abac1c21acee80b89b4fd",
+    "summary_sha256": "2ee7dc3a6422c68b4f389a3e61f3c054bb44600236872a09835a3e25b4c1adc9",
+    "recommendation_sha256": "c569386402c41bd47a138f91a099815e46473e3c1d0e402eec9e03b082175ba8"
+  },
+  "ordersmc": {
+    "selection_rule": "among eligible candidates, lowest pooled mean PIP RMSE, then mean runtime",
+    "selected_variant": "smc-512x100x10",
+    "settings": {
+      "particles": 512,
+      "num_betas": 100,
+      "mh_steps": 10,
+      "mh_steps_resample": 25
+    },
+    "mean_pip_rmse": 0.005994708147426867,
+    "worst_dimension_p95_pip_rmse": 0.008102049928443128,
+    "mean_runtime_seconds": 124.05958018576105
+  },
+  "order_mcmc": {
+    "selection_rule": "among eligible candidates, lowest mean runtime, then pooled mean PIP RMSE",
+    "selected_variant": "mcmc-thin050-chain270",
+    "settings": {
+      "thin": 50,
+      "sampler_wall_fraction": 0.9,
+      "sampler_wall_seconds_at_300_second_total_budget": 270
+    },
+    "mean_pip_rmse": 0.0020395869532150376,
+    "worst_dimension_p95_pip_rmse": 0.0034070125013655013,
+    "mean_runtime_seconds": 277.03349925585405
+  },
+  "execution_config": "execution_v3.json",
+  "execution_config_sha256": "731602f66fc3c0ea6e771c3a51bcae438eed1bc823b05af4f61f298a4c835a9b",
+  "execution_config_raw_sha256": "3bb3ffa1994a7db66006b645ff078d3e93a9783d5821cf82994d6cb59ce8be0b"
+}

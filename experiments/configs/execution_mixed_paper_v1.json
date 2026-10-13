@@ -1,0 +1,65 @@
+{
+  "schema": "ordersmc-execution-config-v4",
+  "status": "confirmatory-frozen",
+  "freeze_record": "mixed_paper_freeze_v1.json",
+  "notes": [
+    "Frozen before restarted confirmatory execution on 2026-09-03.",
+    "The SMC and MCMC settings are unchanged from pilot_freeze_v3.json.",
+    "Only the generator totality rule changed after pre-inference generation failures: at most 5% rather than 1% of pilot rows may contain an extreme conditional category probability.",
+    "No OrderSMC, MCMC, or comparator result from master seed 20260815 was observed before this amendment."
+  ],
+  "generator": {
+    "max_extreme_probability_fraction": 0.05
+  },
+  "prior": {
+    "order_lambda": 1.0,
+    "structure_lambda": 1.0
+  },
+  "candidate": {
+    "max_parents": 3,
+    "screen_k": 20,
+    "parent_pool_max": 30,
+    "pair_rescue_anchor_k": 8,
+    "pair_rescue_k": 20,
+    "triplet_rescue_pair_k": 0,
+    "triplet_rescue_k": 0
+  },
+  "ordersmc": {
+    "particles": 512,
+    "num_betas": 100,
+    "mh_steps": 10,
+    "mh_steps_resample": 25,
+    "resample_ess_frac": 0.5,
+    "posterior_threshold": 0.5
+  },
+  "e3_ordersmc_ladder": {
+    "30": {"particles": 64, "num_betas": 40, "mh_steps": 3, "mh_steps_resample": 6},
+    "60": {"particles": 96, "num_betas": 60, "mh_steps": 5, "mh_steps_resample": 10},
+    "180": {"particles": 192, "num_betas": 100, "mh_steps": 10, "mh_steps_resample": 20},
+    "300": {"particles": 512, "num_betas": 100, "mh_steps": 10, "mh_steps_resample": 25}
+  },
+  "mcmc": {
+    "maximum_iterations": 1000000000,
+    "burnin_fraction": 0.25,
+    "order_thin": 50,
+    "structure_thin": 10,
+    "order_sampling_wall_fraction": 0.9,
+    "rev_probability": 0.06666666666666667
+  },
+  "budgets_seconds": {
+    "e2": 300,
+    "e3": [30, 60, 180, 300],
+    "reference": 1200
+  },
+  "smoke": {
+    "pilot_size": 300,
+    "particles": 24,
+    "num_betas": 12,
+    "mh_steps": 2,
+    "mh_steps_resample": 3,
+    "mcmc_iterations": 300,
+    "mcmc_burnin": 60,
+    "mcmc_thin": 2,
+    "wall_seconds": null
+  }
+}

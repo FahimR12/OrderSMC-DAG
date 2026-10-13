@@ -1,0 +1,6 @@
+name: ordersmc-bnlearn
+channels:
+  - conda-forge
+dependencies:
+  - r-base=4.4.3
+  - r-bnlearn=5.2.1

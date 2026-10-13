@@ -1,0 +1,69 @@
+{
+  "schema": "ordersmc-execution-config-v7",
+  "status": "confirmatory-frozen",
+  "freeze_record": "v3_pilot_freeze_v1.json",
+  "notes": [
+    "Frozen on 2026-09-08 from the completed resource-only V3 pilot before confirmatory execution.",
+    "Candidate settings were selected from artifact integrity, complete-family recall, and preparation cost; graph-recovery outcomes were not used to choose them.",
+    "The 4096-particle, 64-rank allocation is an inference configuration, not an equal-compute or MPI-speedup claim.",
+    "The full cohort uses four method seeds per dataset; seeds are averaged within dataset before paired dataset-level inference."
+  ],
+  "v3_high_indegree_candidate": {
+    "screen_k": 10,
+    "parent_pool_max": 15
+  },
+  "generator": {
+    "max_extreme_probability_fraction": 0.01,
+    "enforce_extreme_probability_fraction": false
+  },
+  "prior": {
+    "order_lambda": 1.0,
+    "structure_lambda": 1.0
+  },
+  "candidate": {
+    "max_parents": 3,
+    "screen_k": 20,
+    "parent_pool_max": 30,
+    "pair_rescue_anchor_k": 8,
+    "pair_rescue_k": 20,
+    "triplet_rescue_pair_k": 0,
+    "triplet_rescue_k": 0
+  },
+  "ordersmc": {
+    "particles": 4096,
+    "num_betas": 100,
+    "mh_steps": 10,
+    "mh_steps_resample": 25,
+    "resample_ess_frac": 0.5,
+    "posterior_threshold": 0.5
+  },
+  "mcmc": {
+    "maximum_iterations": 1000000000,
+    "burnin_fraction": 0.25,
+    "order_thin": 50,
+    "structure_thin": 10,
+    "order_sampling_wall_fraction": 0.9,
+    "rev_probability": 0.06666666666666667
+  },
+  "budgets_seconds": {
+    "e2": 300,
+    "e3": [
+      30,
+      60,
+      180,
+      300
+    ],
+    "reference": 1200
+  },
+  "smoke": {
+    "pilot_size": 300,
+    "particles": 256,
+    "num_betas": 24,
+    "mh_steps": 3,
+    "mh_steps_resample": 6,
+    "mcmc_iterations": 300,
+    "mcmc_burnin": 60,
+    "mcmc_thin": 2,
+    "wall_seconds": null
+  }
+}

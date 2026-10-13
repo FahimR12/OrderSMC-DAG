@@ -1,0 +1,42 @@
+{
+  "schema": "ordersmc-sampler-correction-pilot-v1",
+  "status": "paired-development-diagnostic-not-confirmatory",
+  "source": "results/section2-v3/seed-20260923-pilot",
+  "source_plan_sha256": "8f53acd37969a54c0823355783263f8c33481dafdfdd5d46614b70813be87565",
+  "replicates": [0, 1],
+  "seed_indices": [0, 1, 2, 3, 4, 5, 6, 7],
+  "mpi_ranks": 64,
+  "common": {
+    "particles": 4096,
+    "num_betas": 100,
+    "mh_steps": 10,
+    "mh_steps_resample": 25,
+    "resample_ess_frac": 0.5,
+    "proposal_swap_weight": 0.75,
+    "proposal_adjacent_swap_weight": 0.25,
+    "proposal_reverse_weight": 0.0,
+    "posterior_threshold": 0.5
+  },
+  "arms": {
+    "proposal_only": {
+      "tempering_path": "collapsed_likelihood",
+      "adaptive_tempering": false,
+      "final_target_snapshot_steps": [0]
+    },
+    "geometric_adaptive": {
+      "tempering_path": "geometric",
+      "adaptive_tempering": true,
+      "adaptive_cess_target": 0.9,
+      "adaptive_min_beta_increment": 1e-8,
+      "adaptive_max_stages": 2000,
+      "final_target_snapshot_steps": [0, 250, 1000]
+    }
+  },
+  "notes": [
+    "Reuse exactly the same training data, screened families, local scores, edge prior and inference seeds. No truth-based tuning.",
+    "The old MPI baseline is read-only. Proposal-only separates the MPI mixture correction from the new bridge.",
+    "Compare the geometric arm at beta=1 before extra moves and after 250/1000 additional proposals per particle.",
+    "Independent seeds, not genealogical ESS or heuristic within-run MCSE alone, assess reproducibility.",
+    "This is not equal-compute benchmarking, a speedup study, or proof of convergence. No automatic selection of a winning arm."
+  ]
+}

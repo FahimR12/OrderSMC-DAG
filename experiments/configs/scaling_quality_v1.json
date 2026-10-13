@@ -1,0 +1,30 @@
+{
+  "extends": "experiments/configs/timing_pilot_v1.json",
+  "schema": "ordersmc-scaling-quality-v1",
+  "task_design": "scaling-quality-v1",
+  "job_prefix": "smc-scaling",
+  "master_seed": 2026092301,
+  "arms": ["dimension"],
+  "scaling_particles": 512,
+  "scaling_num_betas": 32,
+  "mcmc_seconds": [0.5, 2, 10, 30, 120],
+  "adaptive_quality_particles": [512, 1024],
+  "adaptive_quality_ranks": 64,
+  "extra_mcmc_seconds_at_64": 480,
+  "reference_groups": 0,
+  "step_time_limit_minutes": 240,
+  "bundle_hours": 8,
+  "recovery_f1_margin": 0.02,
+  "recovery_shd_per_true_edge_margin": 0.05,
+  "notes": [
+    "Follow-up after inspecting timing-pilot/v2: exploratory, one predeclared dataset per size, three new inference seeds; not confirmatory.",
+    "Primary strong scaling fixes 512 particles, 32 temperatures and 10 MH proposals per particle per stage across 1/8/32/64 ranks. Proposal totals must match; graph quality and PIP differences across core counts are measured, not assumed invariant.",
+    "All ranks execute identical fixed-work SMC settings; adaptive 512/1024-particle SMC at 64 ranks is a separately labelled quality arm, not silently substituted for fixed-work scaling.",
+    "MCMC uses independent chains per core, with loop budgets 0.5/2/10/30/120 seconds and an extra 480 seconds at 64 ranks. Measured inference time includes summaries and aggregation, not just the nominal loop budget.",
+    "All compared methods and budgets run on the same exclusive node within each dataset/seed bundle, in a frozen random order. Report active and reserved costs.",
+    "Graph recovery is assessed against synthetic truth, independent of any MCMC convergence gate. Edge-probability differences to long MCMC are empirical agreement, not posterior error for large networks.",
+    "Exact posterior PIP error remains available at d=12; prior larger-network reference failures remain disclosed in the earlier pilot and are not reclassified as passed.",
+    "Descriptive recovery targets use the mean recovery of all three 64-rank 480-second MCMC runs: directed and skeleton F1 no more than 0.02 below, SHD/true-edge-count no more than 0.05 above. Both methods must qualify in every seed. No formal noninferiority or universal speed claim.",
+    "A four-hour step cap is fixed before the new fits. All attempts and timeouts are retained; previous single-core adaptive timeouts are not overwritten. No new long-reference jobs or sampler/model/default changes."
+  ]
+}

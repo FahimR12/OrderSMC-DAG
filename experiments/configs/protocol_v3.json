@@ -1,0 +1,68 @@
+{
+  "schema": "ordersmc-lean-protocol-config-v3",
+  "protocol_version": "3.0",
+  "statistical_unit": "independent_graph_dataset_pair",
+  "common": {
+    "n_over_d": 20,
+    "method_seeds": 4,
+    "candidate_policy": {
+      "max_parents": 3,
+      "screen_k": 20,
+      "parent_pool_max": 30,
+      "keep_per_child": null
+    },
+    "candidate_sensitivity": {
+      "datasets_per_dimension": 5,
+      "screen_k": 30,
+      "parent_pool_max": 40
+    },
+    "bootstrap": {
+      "confidence": 0.95,
+      "resampling_unit": "whole_dataset",
+      "paired": true,
+      "seeds_aggregated_within_dataset": true
+    },
+    "failure_policy": "retain_every_planned_row"
+  },
+  "e1": {
+    "dimensions": [8, 12],
+    "datasets_per_dimension": 10,
+    "expected_indegree": 1.5,
+    "max_indegree": 2,
+    "candidate_pool": "complete",
+    "methods": ["exact-order-dp", "ordersmc", "order-mcmc"],
+    "primary_metric": "directed_pip_rmse_to_exact_order"
+  },
+  "e2": {
+    "dimensions": [20, 50, 100],
+    "datasets_per_dimension": 20,
+    "expected_indegree": 2.0,
+    "max_indegree": 3,
+    "methods": ["ordersmc", "order-mcmc", "partition-mcmc", "rev-mcmc"],
+    "same_target_panel": ["ordersmc", "order-mcmc"],
+    "end_to_end_panel": ["ordersmc", "partition-mcmc", "rev-mcmc"],
+    "co_primary_metrics": ["directed_auprc", "directed_brier"]
+  },
+  "e3": {
+    "dimensions": [50, 100],
+    "datasets_per_dimension": 10,
+    "budget_points_seconds": [30, 60, 180, 300],
+    "primary_methods": ["ordersmc", "order-mcmc"],
+    "primary_target": "order_modular",
+    "reference_seeds_per_target": 4,
+    "reproducibility_subset": {
+      "datasets_per_dimension": 5,
+      "methods": ["ordersmc", "order-mcmc"],
+      "seeds": 20
+    }
+  },
+  "e4": {
+    "dimensions": [100, 200],
+    "datasets_per_dimension": 5,
+    "particles": 512,
+    "ranks": [1, 2, 4, 8, 16, 32, 64, 128, 256],
+    "timing_repeats": 3,
+    "useful_scaling_max_ranks": 32,
+    "saturation_ranks": [64, 128, 256]
+  }
+}

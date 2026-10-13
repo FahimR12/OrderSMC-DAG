@@ -9,8 +9,11 @@
     "pair_rescue_anchor_k": 6,
     "pair_rescue_k": 12,
     "parent_pool_max": 18,
+    "discrete_score": "bdeu",
+    "clg_ig_shape": 2.0,
+    "clg_ig_scale": 1.0,
+    "standardize_continuous": true,
     "seed": 0,
     "posterior_threshold": 0.7
   }
 }
-

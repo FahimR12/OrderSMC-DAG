@@ -18,6 +18,13 @@ ordersmc:
   edge_penalty: 8.0
   alpha: 1.0
   tau: 3.0
+  glm_tau: 1.0
+  discrete_score: bdeu
+  clg_ig_shape: 2.0
+  clg_ig_scale: 1.0
+  standardize_continuous: true
+  score_method: native
+  dg_penalty_discount: 1.0
+  dg_ridge: 0.0
   seed: 202
   posterior_threshold: 0.7
-

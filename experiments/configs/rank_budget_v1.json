@@ -1,0 +1,22 @@
+{
+  "schema": "ordersmc-rank-budget-v1",
+  "status": "fixed-data-computational-followup-not-independent-recovery-validation",
+  "master_seed": 20260920,
+  "score_method": "rank-native",
+  "n_train": 5000,
+  "noise_families": ["gaussian", "student_t_df3"],
+  "replicates": [0, 1, 2, 3],
+  "method_seeds": 20,
+  "seeds_per_task": 5,
+  "mpi_ranks": 64,
+  "budgets": {
+    "baseline": {"particles": 4096, "num_betas": 100, "mh_steps": 10, "mh_steps_resample": 25},
+    "extended": {"particles": 16384, "num_betas": 100, "mh_steps": 20, "mh_steps_resample": 50}
+  },
+  "orientation_display_threshold": 0.9,
+  "diagnostic_flags": {"mean_smc_own_target_pip_rmse": 0.012, "p95_smc_own_target_pip_rmse": 0.02},
+  "selection": "all eight existing n=5000 rank-native cases; do not select by recovery or instability",
+  "paired_measurement_policy": "do not rerun the monotone-transformed copies: the previous completed study verified identical local scores and exact targets",
+  "pairing": "same candidate table, exact target and seed namespace across budgets; seed index is not an independent dataset",
+  "interpretation": "Compare the combined increase in particles and MH moves, not their isolated effects. No score/prior/model changes, data regeneration, speedup study, automatic winner selection or metadata-study launch."
+}

@@ -1,61 +1,129 @@
 """OrderSMC-DAG: scalable Bayesian DAG structure learning."""
 
-from .api import build_candidates, fit, sample
+from ._version import __version__
+
+from .api import (
+    build_candidates,
+    candidate_table_provenance,
+    data_fingerprint,
+    fit,
+    sample,
+    validate_candidate_provenance,
+)
 from .confidence import edge_confidence_table, seed_consensus_table
-from .config import DAGConfig, OrderSMCConfig
+from .uncertainty import UncertaintyGraphSummary, uncertainty_aware_graph
+from .config import (
+    DAGConfig,
+    OrderSMCConfig,
+    candidate_build_config,
+    sampling_config,
+)
 from .core import (
+    GraphSizeDistribution,
     OrderCandidateTable,
+    PosteriorDAGSample,
     OrderSMCResult,
+    OrderSMCSnapshot,
+    OrderSMCState,
     best_edges_for_order,
+    candidate_max_indegree,
     build_order_candidate_table,
     build_order_candidate_table_parts,
     edge_probs_for_order,
+    edge_probs_from_posterior_dag_samples,
+    graph_size_probs_for_order,
     order_log_target,
     order_smc,
+    sample_weighted_posterior_dags,
     weighted_edge_probs_for_orders,
     weighted_edge_summary_for_orders,
+    weighted_graph_size_probs_for_orders,
 )
 from .data import (
+    encode_data_with_metadata,
     infer_metadata_and_encode,
     metadata_from_mapping,
     metadata_summary,
     metadata_to_mapping,
     validate_data,
 )
-from .graphs import dag_from_edge_probs, edges_above_threshold
-from .scoring import FamilyScoreResult, UnifiedFamilyScorer
-from .persistence import load_candidate_table, load_config, save_candidate_table
+from .graphs import (
+    CPDAG,
+    dag_from_edge_probs,
+    dag_to_cpdag,
+    edges_above_threshold,
+    optimal_bayes_action_dag,
+)
+from .scoring import DegenerateGaussianScorer, FamilyScoreResult, UnifiedFamilyScorer
+from .persistence import (
+    candidate_table_artifact_record,
+    candidate_table_content_sha256,
+    canonical_candidate_table_bytes,
+    inferential_replay_record,
+    load_candidate_table,
+    load_config,
+    load_smc_checkpoint,
+    save_candidate_table,
+    save_smc_checkpoint,
+    validate_complete_candidate_pool,
+)
 
 __all__ = [
+    "UncertaintyGraphSummary",
+    "uncertainty_aware_graph",
     "DAGConfig",
+    "CPDAG",
+    "DegenerateGaussianScorer",
     "FamilyScoreResult",
+    "GraphSizeDistribution",
     "OrderCandidateTable",
+    "PosteriorDAGSample",
     "OrderSMCConfig",
     "OrderSMCResult",
+    "OrderSMCSnapshot",
+    "OrderSMCState",
     "UnifiedFamilyScorer",
     "best_edges_for_order",
     "build_candidates",
+    "candidate_max_indegree",
+    "candidate_build_config",
+    "candidate_table_artifact_record",
+    "candidate_table_content_sha256",
+    "candidate_table_provenance",
+    "canonical_candidate_table_bytes",
     "build_order_candidate_table",
     "build_order_candidate_table_parts",
     "dag_from_edge_probs",
+    "dag_to_cpdag",
     "edge_probs_for_order",
+    "edge_probs_from_posterior_dag_samples",
+    "graph_size_probs_for_order",
     "edge_confidence_table",
+    "encode_data_with_metadata",
     "edges_above_threshold",
     "fit",
+    "data_fingerprint",
     "infer_metadata_and_encode",
+    "inferential_replay_record",
     "load_candidate_table",
     "load_config",
+    "load_smc_checkpoint",
     "metadata_from_mapping",
     "metadata_summary",
     "metadata_to_mapping",
     "order_log_target",
     "order_smc",
+    "optimal_bayes_action_dag",
     "sample",
+    "sample_weighted_posterior_dags",
+    "sampling_config",
     "save_candidate_table",
+    "save_smc_checkpoint",
     "seed_consensus_table",
     "validate_data",
+    "validate_candidate_provenance",
+    "validate_complete_candidate_pool",
     "weighted_edge_probs_for_orders",
     "weighted_edge_summary_for_orders",
+    "weighted_graph_size_probs_for_orders",
 ]
-
-__version__ = "0.2.0"

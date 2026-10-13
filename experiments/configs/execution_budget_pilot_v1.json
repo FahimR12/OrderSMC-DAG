@@ -1,0 +1,91 @@
+{
+  "schema": "ordersmc-execution-config-v6",
+  "status": "confirmatory-frozen",
+  "freeze_record": "budget_freeze_v1.json",
+  "notes": [
+    "Created after runtime-only inspection showed that the prior E2 fixed OrderSMC schedule exceeded its nominal 300-second envelope.",
+    "Dimension-specific SMC schedules are selected using completed-beta runtime only; no recovery or posterior-quality outcome was inspected.",
+    "The original 512-particle schedule remains unchanged for exact V1 validation.",
+    "Every timed SMC row must finish beta=1; partially annealed populations are never reported as posterior samples."
+  ],
+  "generator": {
+    "max_extreme_probability_fraction": 0.01,
+    "enforce_extreme_probability_fraction": false
+  },
+  "prior": {
+    "order_lambda": 1.0,
+    "structure_lambda": 1.0
+  },
+  "candidate": {
+    "max_parents": 3,
+    "screen_k": 20,
+    "parent_pool_max": 30,
+    "pair_rescue_anchor_k": 8,
+    "pair_rescue_k": 20,
+    "triplet_rescue_pair_k": 0,
+    "triplet_rescue_k": 0
+  },
+  "ordersmc": {
+    "particles": 512,
+    "num_betas": 100,
+    "mh_steps": 10,
+    "mh_steps_resample": 25,
+    "resample_ess_frac": 0.5,
+    "posterior_threshold": 0.5
+  },
+  "e2_ordersmc_by_dimension": {
+    "20": {"particles": 192, "num_betas": 80, "mh_steps": 8, "mh_steps_resample": 16},
+    "50": {"particles": 112, "num_betas": 60, "mh_steps": 5, "mh_steps_resample": 10},
+    "100": {"particles": 80, "num_betas": 48, "mh_steps": 4, "mh_steps_resample": 8}
+  },
+  "e3_ordersmc_ladder": {
+    "30": {"particles": 32, "num_betas": 24, "mh_steps": 2, "mh_steps_resample": 4},
+    "60": {"particles": 64, "num_betas": 40, "mh_steps": 3, "mh_steps_resample": 6},
+    "180": {"particles": 96, "num_betas": 50, "mh_steps": 4, "mh_steps_resample": 8},
+    "300": {"particles": 112, "num_betas": 60, "mh_steps": 5, "mh_steps_resample": 10}
+  },
+  "e3_ordersmc_ladder_by_dimension": {
+    "50": {
+      "30": {"particles": 40, "num_betas": 28, "mh_steps": 2, "mh_steps_resample": 4},
+      "60": {"particles": 64, "num_betas": 40, "mh_steps": 3, "mh_steps_resample": 6},
+      "180": {"particles": 96, "num_betas": 50, "mh_steps": 4, "mh_steps_resample": 8},
+      "300": {"particles": 112, "num_betas": 60, "mh_steps": 5, "mh_steps_resample": 10}
+    },
+    "100": {
+      "30": {"particles": 24, "num_betas": 20, "mh_steps": 1, "mh_steps_resample": 2},
+      "60": {"particles": 32, "num_betas": 24, "mh_steps": 2, "mh_steps_resample": 4},
+      "180": {"particles": 64, "num_betas": 40, "mh_steps": 3, "mh_steps_resample": 6},
+      "300": {"particles": 80, "num_betas": 48, "mh_steps": 4, "mh_steps_resample": 8}
+    }
+  },
+  "e4_ordersmc": {
+    "particles": 80,
+    "num_betas": 48,
+    "mh_steps": 4,
+    "mh_steps_resample": 8
+  },
+  "mcmc": {
+    "maximum_iterations": 1000000000,
+    "burnin_fraction": 0.25,
+    "order_thin": 50,
+    "structure_thin": 10,
+    "order_sampling_wall_fraction": 0.9,
+    "rev_probability": 0.06666666666666667
+  },
+  "budgets_seconds": {
+    "e2": 300,
+    "e3": [30, 60, 180, 300],
+    "reference": 1200
+  },
+  "smoke": {
+    "pilot_size": 300,
+    "particles": 24,
+    "num_betas": 12,
+    "mh_steps": 2,
+    "mh_steps_resample": 3,
+    "mcmc_iterations": 300,
+    "mcmc_burnin": 60,
+    "mcmc_thin": 2,
+    "wall_seconds": null
+  }
+}

@@ -1,0 +1,81 @@
+{
+  "schema": "ordersmc-budget-freeze-v1",
+  "status": "confirmatory-frozen",
+  "frozen_utc": "2026-09-03T13:02:00Z",
+  "execution_config": "execution_budget_pilot_v1.json",
+  "execution_config_sha256": "4800eb569266932e6e245d1afbf9d3953a7992be9208c4a7e57920717948f916",
+  "execution_config_raw_sha256": "3ca651e9b91c52776c141780b8805db0b094b7b6692ab4dc30f50d57907bdb5f",
+  "reason": "The previous fixed 512-particle E2 schedule completed beta=1 but exceeded its nominal 300-second envelope, including 889--1118 seconds at d=20. Dimension-specific schedules were therefore selected before recovery outcomes were inspected.",
+  "information_used": [
+    "completed-beta status",
+    "runtime seconds",
+    "effective sample size as an execution diagnostic",
+    "Slurm completion status"
+  ],
+  "information_not_inspected": [
+    "graph recovery",
+    "posterior edge probabilities",
+    "method accuracy comparisons",
+    "calibration Brier scores"
+  ],
+  "runtime_calibration": {
+    "exploratory_array_job": 10414683,
+    "final_array_job": 10414736,
+    "tables_per_dimension": 3,
+    "hardware_policy": "one CPU and one numerical thread per calibration row",
+    "all_completed_beta": 1.0,
+    "observed_seconds": {
+      "20": [214.2563303038478, 259.4304835870862, 257.05963972210884],
+      "50": [250.0074568130076, 258.2161718849093, 263.88375906832516],
+      "100": [306.052727477625, 255.47858309745789, 250.07161550968885]
+    },
+    "acceptance_envelope_seconds": 315,
+    "selection_rule": "choose the largest tested completed-beta schedule whose observed runtime did not exceed 105% of the 300-second nominal budget on any of three calibration tables"
+  },
+  "invalidated_launch_audit": {
+    "e2_run_arrays": [10413750, 10413751],
+    "e2_aggregate": 10413752,
+    "e4_prepare_and_run_jobs": [10413754, 10413755, 10413756, 10413757, 10413758, 10413759, 10413760, 10413761, 10413762, 10413826, 10413829],
+    "action": "cancelled with partial files preserved; excluded from scientific summaries"
+  },
+  "pre_confirmatory_implementation_amendments": [
+    {
+      "component": "REV-MCMC parent-row validation",
+      "reason": "The smoke run exposed avoidable repeated whole-DAG construction in a transition feasibility check.",
+      "change": "For the DAG with the selected child's incoming arcs removed, cache that child's descendants once and reject exactly those proposed parents that are descendants.",
+      "mathematical_equivalence_evidence": "Exhaustive comparison with brute-force DAG validation for every child and required parent over every directed three-node graph.",
+      "information_used": ["smoke completion status", "smoke runtime"],
+      "information_not_used": ["graph recovery", "posterior probabilities", "method accuracy contrasts"]
+    },
+    {
+      "component": "large-graph DAG-constrained Bayes-action audit",
+      "reason": "A V2 smoke analysis exposed a 6.236016181215831e-08 exact-objective discrepancy allowed by default floating MILP tolerances.",
+      "change": "Set zero relative and absolute MIP gaps, tighten HiGHS primal, dual, and integer feasibility tolerances to 1e-9, compare candidate utilities as exact sums of binary64 rationals, retain a strictly better audited candidate only below 1e-9, and reject larger discrepancies.",
+      "scope": "post-processing representative graph only; posterior probabilities and sampler output are unchanged",
+      "information_used": ["solver status", "exact objective regret", "edge counts"],
+      "information_not_used": ["truth graph", "graph recovery", "method accuracy contrasts"]
+    }
+  ],
+  "post_run_reporting_amendments": [
+    {
+      "component": "exact-order graph-size diagnostic normalization",
+      "trigger": "Two of ten exact references in the supplementary d=12, n/d=50 V1 cell failed after PIP computation because graph-size mass missed a 2e-13 normalization assertion.",
+      "change": "Normalize graph-size feature coefficients after subtracting their finite maximum, using a compensated finite sum, before reconstructing the log normalizer.",
+      "scope": "Optional graph-size diagnostic only; primary V1 cells, OrderSMC, Order MCMC, candidate tables, and recovery outcomes are unchanged.",
+      "verification": "Both preserved failing candidate tables now return 132 directed PIPs and graph-size probability mass exactly summing to 1.0; a large-log-offset regression test was added.",
+      "raw_failures_preserved": true
+    },
+    {
+      "component": "failure-aware aggregation",
+      "trigger": "V1 aggregation attempted to read edge probabilities from the two preserved failed exact-reference records.",
+      "change": "Construct exact-reference maps only from records whose status is complete.",
+      "scope": "Derived reporting only; raw inference records are unchanged.",
+      "verification": "A failed-reference regression fixture completes aggregation and retains the failure in the completion ledger."
+    }
+  ],
+  "master_seeds": {
+    "legacy_core_confirmatory": 20260815,
+    "brain_study_pilot": 20260903,
+    "brain_study_confirmatory": 20260904
+  }
+}

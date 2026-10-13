@@ -16,6 +16,7 @@ from .api import build_candidates, fit, sample
 from .confidence import seed_consensus_table
 from .config import OrderSMCConfig
 from .data import (
+    encode_data_with_metadata,
     infer_metadata_and_encode,
     metadata_from_mapping,
     metadata_summary,
@@ -24,6 +25,7 @@ from .data import (
 )
 from .graphs import dag_from_edge_probs
 from .persistence import (
+    candidate_table_artifact_record,
     load_candidate_table,
     load_config,
     load_edge_probability_map,
@@ -60,6 +62,7 @@ def _make_parser() -> argparse.ArgumentParser:
     inspect_parser.add_argument("--metadata-out", type=Path, default=Path("metadata.json"))
     inspect_parser.add_argument("--encoded-output", type=Path)
     inspect_parser.add_argument("--categorical-max-unique", type=int, default=10)
+    _add_input_encoding_argument(inspect_parser)
     inspect_parser.set_defaults(handler=_command_inspect)
 
     fit_parser = commands.add_parser("fit", help="build candidates, run SMC, and save results")
@@ -99,19 +102,67 @@ def _make_parser() -> argparse.ArgumentParser:
 
 def _add_analysis_arguments(parser: argparse.ArgumentParser) -> None:
     parser.add_argument("--metadata", type=Path, help="JSON/YAML variable metadata")
+    _add_input_encoding_argument(parser)
     parser.add_argument("--backend", choices=["auto", "local", "mpi"], default="auto")
     _add_config_arguments(parser)
+
+
+def _add_input_encoding_argument(parser: argparse.ArgumentParser) -> None:
+    parser.add_argument(
+        "--input-encoding",
+        choices=["auto", "raw", "encoded"],
+        default="auto",
+        help=(
+            "interpret discrete columns as raw metadata levels or integer codes; "
+            "auto rejects ambiguous numeric-looking labels"
+        ),
+    )
 
 
 def _add_config_arguments(parser: argparse.ArgumentParser) -> None:
     parser.add_argument("--config", type=Path, help="JSON/YAML OrderSMC configuration")
     parser.add_argument("--preset", choices=["quick", "standard", "thorough"], default="standard")
     parser.add_argument("--particles", type=int)
-    parser.add_argument("--betas", type=int)
+    parser.add_argument("--betas", type=int, help="Temperature count for --no-adaptive-tempering; ignored by adaptive schedules")
+    parser.add_argument("--tempering-path", choices=["geometric", "collapsed_likelihood"])
+    parser.add_argument("--adaptive-tempering", action=argparse.BooleanOptionalAction, default=None)
+    parser.add_argument("--adaptive-cess-target", type=float)
+    parser.add_argument("--final-target-steps", type=int, nargs="+", help="Additional proposals per particle at beta=1; increasing snapshot counts")
     parser.add_argument("--mh-steps", type=int)
     parser.add_argument("--max-parents", type=int)
     parser.add_argument("--seed", type=int)
     parser.add_argument("--threshold", type=float)
+    parser.add_argument("--discrete-score", choices=["bdeu", "bds"])
+    parser.add_argument(
+        "--glm-tau",
+        type=float,
+        help="Normal prior SD for logistic and softmax coefficients",
+    )
+    parser.add_argument(
+        "--score-method",
+        choices=["native", "rank-native", "dg", "clg-bic"],
+        help=(
+            "local-family score: native mixed evidence, experimental rank-native "
+            "plug-in weights, score-equivalent DG-BIC, "
+            "or restricted conditional-Gaussian BIC"
+        ),
+    )
+    parser.add_argument(
+        "--dg-penalty-discount",
+        type=float,
+        help="DG-BIC penalty multiplier (ordinary BIC: 1.0)",
+    )
+    parser.add_argument(
+        "--dg-ridge",
+        type=float,
+        help="optional non-negative DG covariance ridge (published score: 0.0)",
+    )
+    parser.add_argument(
+        "--provenance-policy",
+        choices=["require", "warn", "ignore"],
+        default="warn",
+        help="how to handle legacy candidate tables without embedded provenance",
+    )
     parser.add_argument("--quiet", action="store_true")
 
 
@@ -120,10 +171,19 @@ def _config_from_args(args) -> OrderSMCConfig:
     return config.with_overrides(
         particles=args.particles,
         num_betas=args.betas,
+        tempering_path=args.tempering_path,
+        adaptive_tempering=args.adaptive_tempering,
+        adaptive_cess_target=args.adaptive_cess_target,
+        final_target_snapshot_steps=args.final_target_steps,
         mh_steps=args.mh_steps,
         max_parents=getattr(args, "max_parents", None),
         seed=args.seed,
         posterior_threshold=args.threshold,
+        discrete_score=args.discrete_score,
+        glm_tau=args.glm_tau,
+        score_method=args.score_method,
+        dg_penalty_discount=args.dg_penalty_discount,
+        dg_ridge=args.dg_ridge,
     )
 
 
@@ -141,23 +201,35 @@ def _actual_backend(requested: str):
     return backend, comm if backend == "mpi" else None, comm.Get_rank() if backend == "mpi" else 0
 
 
-def _read_data(path: Path, metadata_path: Path | None):
-    raw = pd.read_csv(path)
+def _read_data(
+    path: Path, metadata_path: Path | None, *, input_encoding: str = "auto"
+):
     if metadata_path is None:
-        return infer_metadata_and_encode(raw)
-    vtypes, cards = metadata_from_mapping(load_mapping(metadata_path))
-    data = raw.copy()
-    for name, variable_type in vtypes.items():
-        if name not in data:
-            continue
-        dtype = "int64" if variable_type in {"bin", "cat"} else "float64"
-        data[name] = pd.to_numeric(data[name], errors="raise").astype(dtype)
+        return infer_metadata_and_encode(pd.read_csv(path))
+    vtypes, cards, levels = metadata_from_mapping(
+        load_mapping(metadata_path), return_levels=True
+    )
+    # Preserve string categories such as zero-padded identifiers. Encoded CSVs
+    # remain supported because numeric code strings are detected downstream.
+    string_columns = {
+        name: "string"
+        for name, values in levels.items()
+        if values and all(isinstance(value, str) for value in values)
+    }
+    raw = pd.read_csv(path, dtype=string_columns or None)
+    data = encode_data_with_metadata(
+        raw, vtypes, cards, levels, input_encoding=input_encoding
+    )
     return data, vtypes, cards
 
 
 def _distributed_data(args, backend, comm, rank):
     if rank == 0:
-        values = _read_data(args.data, getattr(args, "metadata", None))
+        values = _read_data(
+            args.data,
+            getattr(args, "metadata", None),
+            input_encoding=getattr(args, "input_encoding", "auto"),
+        )
     else:
         values = None
     return comm.bcast(values, root=0) if backend == "mpi" else values
@@ -165,15 +237,20 @@ def _distributed_data(args, backend, comm, rank):
 
 def _command_inspect(args) -> int:
     if args.metadata is None:
-        data, vtypes, cards = infer_metadata_and_encode(
-            pd.read_csv(args.data), categorical_max_unique=args.categorical_max_unique
+        data, vtypes, cards, levels = infer_metadata_and_encode(
+            pd.read_csv(args.data),
+            categorical_max_unique=args.categorical_max_unique,
+            return_levels=True,
         )
     else:
-        data, vtypes, cards = _read_data(args.data, args.metadata)
+        data, vtypes, cards = _read_data(
+            args.data, args.metadata, input_encoding=args.input_encoding
+        )
+        levels = data.attrs.get("ordersmc_levels", {})
     validate_data(data, vtypes, cards)
     summary = metadata_summary(data, vtypes, cards)
     print(summary.to_string(index=False))
-    save_mapping(metadata_to_mapping(vtypes, cards), args.metadata_out)
+    save_mapping(metadata_to_mapping(vtypes, cards, levels=levels), args.metadata_out)
     if args.encoded_output:
         args.encoded_output.parent.mkdir(parents=True, exist_ok=True)
         data.to_csv(args.encoded_output, index=False)
@@ -217,6 +294,7 @@ def _command_fit(args) -> int:
         comm=comm,
         candidate_table=table,
         verbose=not args.quiet,
+        provenance_policy=args.provenance_policy,
     )
     if rank == 0:
         local_result = result.to_local_result() if backend == "mpi" else result
@@ -224,7 +302,9 @@ def _command_fit(args) -> int:
             local_result.run_info["candidate_build_seconds"] = checkpoint_build_seconds
             local_result.run_info["total_seconds"] = float(local_result.run_info.get("total_seconds", 0.0)) + checkpoint_build_seconds
         local_result.save(args.output, threshold=config.posterior_threshold)
-        _save_reproducibility_files(args.output, config, vtypes, cards)
+        _save_reproducibility_files(
+            args.output, config, vtypes, cards, levels=data.attrs.get("ordersmc_levels")
+        )
         _print_completion(local_result, args.output)
     return 0
 
@@ -240,7 +320,15 @@ def _command_build_table(args) -> int:
         saved = save_candidate_table(table, args.output)
         sidecar = saved.with_suffix(saved.suffix + ".json")
         save_mapping(
-            {"nodes": table.nodes, "config": config.to_dict(), "metadata": metadata_to_mapping(vtypes, cards)},
+            {
+                "nodes": table.nodes,
+                "config": config.to_dict(),
+                "artifact": candidate_table_artifact_record(table, saved),
+                "candidate_provenance": table.provenance,
+                "metadata": metadata_to_mapping(
+                    vtypes, cards, levels=data.attrs.get("ordersmc_levels")
+                ),
+            },
             sidecar,
         )
         print(f"Candidate table saved to {saved}")
@@ -256,14 +344,18 @@ def _command_sample(args) -> int:
         table = None
     table = comm.bcast(table, root=0) if backend == "mpi" else table
     started = time.perf_counter()
-    result = sample(table, config=config, backend=backend, comm=comm, verbose=not args.quiet)
+    result = sample(
+        table,
+        config=config,
+        backend=backend,
+        comm=comm,
+        verbose=not args.quiet,
+        provenance_policy=args.provenance_policy,
+    )
     if rank == 0:
         local_result = result.to_local_result() if backend == "mpi" else result
         local_result.run_info.update(
             {
-                "nodes": table.nodes,
-                "config": config.to_dict(),
-                "backend": backend,
                 "candidate_table": str(args.candidate_table),
                 "sampling_seconds": time.perf_counter() - started,
             }
@@ -303,7 +395,14 @@ def _command_multiseed(args) -> int:
         save_candidate_table(table, args.output / "candidate_table.pkl.gz")
     for seed in seeds:
         config = base_config.with_overrides(seed=seed)
-        result = sample(table, config=config, backend=backend, comm=comm, verbose=not args.quiet)
+        result = sample(
+            table,
+            config=config,
+            backend=backend,
+            comm=comm,
+            verbose=not args.quiet,
+            provenance_policy=args.provenance_policy,
+        )
         if rank == 0:
             local_result = result.to_local_result() if backend == "mpi" else result
             local_result.run_info.update(
@@ -323,7 +422,13 @@ def _command_multiseed(args) -> int:
         pd.DataFrame(sorted(graph.edges()), columns=["Parent", "Child"]).to_csv(
             args.output / "consensus_dag.csv", index=False
         )
-        _save_reproducibility_files(args.output, base_config, vtypes, cards)
+        _save_reproducibility_files(
+            args.output,
+            base_config,
+            vtypes,
+            cards,
+            levels=data.attrs.get("ordersmc_levels"),
+        )
         save_mapping(
             {"seeds": seeds, "threshold": base_config.posterior_threshold, "consensus_edges": graph.number_of_edges()},
             args.output / "consensus_summary.json",
@@ -333,10 +438,15 @@ def _command_multiseed(args) -> int:
 
 
 def _save_reproducibility_files(
-    output: Path, config: OrderSMCConfig, vtypes: Dict[str, str], cards: Dict[str, int]
+    output: Path,
+    config: OrderSMCConfig,
+    vtypes: Dict[str, str],
+    cards: Dict[str, int],
+    *,
+    levels=None,
 ) -> None:
     save_mapping(config.to_dict(), output / "config.json")
-    save_mapping(metadata_to_mapping(vtypes, cards), output / "metadata.json")
+    save_mapping(metadata_to_mapping(vtypes, cards, levels=levels), output / "metadata.json")
 
 
 def _print_completion(result, output: Path) -> None:

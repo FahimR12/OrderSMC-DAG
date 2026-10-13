@@ -5,5 +5,19 @@ __pycache__/
 .venv/
 build/
 dist/
-results/
-
+# Keep large/raw experiment trees out of the code archive, but include the
+# curated, conference-sized publication bundle.
+results/*
+!results/publication/
+!results/publication/**
+experiments/generated/
+experiments/runs/
+experiments/prepared/
+*.pkl
+*.pkl.gz
+*.checkpoint
+*.log
+.coverage
+htmlcov/
+# Official competitor checkouts are pinned externally, not vendored into a submission.
+external/

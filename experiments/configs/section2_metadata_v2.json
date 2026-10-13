@@ -1,0 +1,195 @@
+{
+  "schema": "ordersmc-section2-metadata-design-v1",
+  "status": "protein-pilot-before-confirmatory-freeze",
+  "study_version": "2.0",
+  "pilot_master_seed": 20260918,
+  "confirmatory_master_seed": 20260919,
+  "profile_priority": [
+    "protein_pathway",
+    "rna_pathway",
+    "protein_molecule",
+    "rna_molecule",
+    "joint_molecule",
+    "joint_pathway"
+  ],
+  "cohorts": {
+    "smoke": {
+      "profiles": [
+        "protein_pathway"
+      ],
+      "panels": [
+        "m1_matched"
+      ],
+      "primary_datasets": 1,
+      "secondary_datasets": 0,
+      "ordersmc_seeds": 1,
+      "reproducibility_seeds": 1,
+      "comparator_seeds": 1
+    },
+    "pilot": {
+      "profiles": [
+        "protein_pathway"
+      ],
+      "panels": [
+        "m1_matched",
+        "m2_gaussian_pair",
+        "m3_sample_size",
+        "m4_cg_compatible",
+        "m5_negative_controls"
+      ],
+      "primary_datasets": 5,
+      "secondary_datasets": 3,
+      "ordersmc_seeds": 4,
+      "reproducibility_seeds": 8,
+      "comparator_seeds": 4
+    },
+    "full": {
+      "profiles": [
+        "protein_pathway",
+        "rna_pathway",
+        "protein_molecule",
+        "rna_molecule",
+        "joint_molecule",
+        "joint_pathway"
+      ],
+      "panels": [
+        "m1_matched",
+        "m2_gaussian_pair",
+        "m3_sample_size",
+        "m4_cg_compatible",
+        "m5_negative_controls"
+      ],
+      "primary_datasets": 20,
+      "secondary_datasets": 10,
+      "ordersmc_seeds": 4,
+      "reproducibility_seeds": 8,
+      "comparator_seeds": 4
+    }
+  },
+  "panel_scope": {
+    "m1_matched": "all",
+    "m2_gaussian_pair": [
+      "protein_pathway",
+      "rna_pathway",
+      "protein_molecule",
+      "joint_molecule"
+    ],
+    "m3_sample_size": [
+      "protein_pathway",
+      "joint_molecule"
+    ],
+    "m4_cg_compatible": [
+      "protein_pathway",
+      "joint_pathway"
+    ],
+    "m5_negative_controls": "all"
+  },
+  "generator": {
+    "true_graph_source": "independent_seeded_draw",
+    "uses_participant_values": false,
+    "uses_empirical_edges_or_directions": false,
+    "graph_family": "modular",
+    "expected_indegree": 1.5,
+    "maximum_indegree": 2,
+    "covariates": [
+      "age_z",
+      "female",
+      "PD"
+    ],
+    "primary_causal_regime": "unrestricted",
+    "primary_role_constraints": {
+      "age_z": "exogenous",
+      "female": "exogenous",
+      "PD": "observed_cross_sectional_disease_state_upstream_of_molecular_measurements"
+    },
+    "female_prevalence_assumption": 0.5,
+    "female_prevalence_status": "explicit-placeholder-not-present-in-uploaded-metadata",
+    "independent_test_size": "same_as_training_size"
+  },
+  "panels": {
+    "m0_calibration": {
+      "source": "m1_matched datasets",
+      "selection_uses_graph_recovery": false,
+      "metrics": [
+        "absolute_correlation_median",
+        "absolute_correlation_q95",
+        "effective_rank",
+        "components_50pct",
+        "components_80pct",
+        "components_90pct",
+        "components_95pct",
+        "skewness_median",
+        "excess_kurtosis_median",
+        "PD_prevalence",
+        "biological_to_covariate_absolute_correlations"
+      ]
+    },
+    "m1_matched": {
+      "data_variant": "metadata",
+      "sample_multiplier": 1,
+      "causal_regime": "unrestricted",
+      "negative_control": "none"
+    },
+    "m2_gaussian_pair": {
+      "data_variant": "gaussian",
+      "sample_multiplier": 1,
+      "causal_regime": "unrestricted",
+      "negative_control": "none",
+      "paired_with": "m1_matched"
+    },
+    "m3_sample_size": {
+      "data_variant": "metadata",
+      "sample_multipliers": [
+        0.5,
+        2
+      ],
+      "causal_regime": "unrestricted",
+      "negative_control": "none",
+      "paired_with": "m1_matched"
+    },
+    "m4_cg_compatible": {
+      "data_variant": "gaussian",
+      "sample_multiplier": 1,
+      "causal_regime": "cg_compatible",
+      "negative_control": "none",
+      "interpretation": "CLG-compatible sensitivity: both orientation constraints and genuinely Gaussian continuous mechanisms; not an isolated representation advantage"
+    },
+    "m5_negative_controls": {
+      "data_variant": "metadata",
+      "sample_multiplier": 1,
+      "causal_regime": "unrestricted",
+      "negative_controls": [
+        "empty",
+        "pd_shuffle"
+      ]
+    }
+  },
+  "statistics": {
+    "statistical_unit": "independently_generated_DAG_dataset_pair",
+    "method_seeds": "nested_repeated_measurements_within_dataset",
+    "primary_evaluation_seed_indices": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "ordersmc_reproducibility_seed_indices": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "reproducibility_extension_excluded_from_recovery_comparisons": true,
+    "seed_aggregation": "average_within_dataset_before_paired_dataset_bootstrap",
+    "confidence": 0.95,
+    "bootstrap_repetitions": 10000
+  },
+  "gated_future_adapters": [
+    "dag-gflownet-mixed-score",
+    "bayesian-causal-discovery-networks-linear-mixed"
+  ]
+}

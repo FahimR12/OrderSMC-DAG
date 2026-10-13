@@ -1,0 +1,81 @@
+{
+  "schema": "ordersmc-execution-config-v9",
+  "status": "resource-and-calibration-pilot-not-confirmatory",
+  "notes": [
+    "Development pilot using the accepted rank-native model for unrestricted data and clg-bic for truly Gaussian CG-compatible M4.",
+    "Finite-sample calibration uses eight independent samples at profile n=222, not population statistics at n=2000.",
+    "A disjoint 50-sample-per-graph calibration audit must pass before preparation/inference.",
+    "Female prevalence remains an explicit 0.5 assumption with 0.4/0.6 fidelity sensitivities.",
+    "SMC settings are frozen at 4096 particles, 100 temperatures, 10/25 moves; 64 MPI ranks accelerate individual fits, not a speedup study."
+  ],
+  "generator": {
+    "pilot_size": 2000,
+    "female_prevalence": 0.5,
+    "calibration_method": "finite-sample-v2",
+    "calibration_repeats": 8,
+    "covariate_effect_policy": "metadata-ratio-v1"
+  },
+  "prior": {
+    "order_lambda": 1,
+    "structure_lambda": 1
+  },
+  "candidate": {
+    "max_parents": 2,
+    "screen_k": 30,
+    "parent_pool_max": 40,
+    "pair_rescue_anchor_k": 10,
+    "pair_rescue_k": 30,
+    "triplet_rescue_pair_k": 0,
+    "triplet_rescue_k": 0
+  },
+  "ordersmc": {
+    "particles": 4096,
+    "num_betas": 100,
+    "mh_steps": 10,
+    "mh_steps_resample": 25,
+    "resample_ess_frac": 0.5,
+    "posterior_threshold": 0.5
+  },
+  "mcmc": {
+    "maximum_iterations": 1000000000,
+    "burnin_fraction": 0.25,
+    "order_thin": 50,
+    "structure_thin": 10,
+    "order_sampling_wall_fraction": 0.9,
+    "rev_probability": 0.06666666666666667
+  },
+  "budgets_seconds": {
+    "e2": 1200,
+    "e3": [
+      300,
+      600,
+      1200
+    ],
+    "reference": 2400
+  },
+  "smoke": {
+    "pilot_size": 300,
+    "particles": 128,
+    "num_betas": 24,
+    "mh_steps": 3,
+    "mh_steps_resample": 6,
+    "mcmc_iterations": 300,
+    "mcmc_burnin": 60,
+    "mcmc_thin": 2,
+    "wall_seconds": null
+  },
+  "metadata_score_policy": {
+    "default": "rank-native",
+    "gaussian_cg_compatible": "clg-bic"
+  },
+  "metadata_calibration_gate": {
+    "required": true,
+    "validation_repeats": 50,
+    "female_sensitivity": [
+      0.4,
+      0.6
+    ],
+    "criterion": "no per-graph systematic tolerance misses at the primary female prevalence; tolerances unchanged"
+  },
+  "accepted_model_freeze": "rank_acceptance_freeze_v1.json"
+}

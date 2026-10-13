@@ -1,0 +1,23 @@
+{
+  "all_passed": true,
+  "checks": [
+    {"adapter": "exact-order-dp", "check": "normalizer_vs_direct_order_enumeration", "residual": 4.440892098500626e-16, "status": "pass", "tolerance": 2e-11},
+    {"adapter": "order-mcmc", "check": "detailed_balance", "residual": 1.3877787807814457e-17, "status": "pass", "tolerance": 2e-11},
+    {"adapter": "order-mcmc", "check": "stationarity", "residual": 2.7755575615628914e-17, "status": "pass", "tolerance": 2e-11},
+    {"adapter": "partition-mcmc", "check": "normalizer_vs_exact_structure", "residual": 0.0, "status": "pass", "tolerance": 2e-11},
+    {"adapter": "partition-mcmc", "check": "pips_vs_exact_structure", "residual": 1.1102230246251565e-16, "status": "pass", "tolerance": 2e-11},
+    {"adapter": "partition-mcmc", "check": "detailed_balance", "residual": 0.0, "status": "pass", "tolerance": 2e-11},
+    {"adapter": "partition-mcmc", "check": "stationarity", "residual": 1.3877787807814457e-17, "status": "pass", "tolerance": 2e-11},
+    {"adapter": "rev-mcmc-standard-kernel", "check": "detailed_balance", "residual": 8.673617379884035e-19, "status": "pass", "tolerance": 2e-11},
+    {"adapter": "rev-mcmc-standard-kernel", "check": "stationarity", "residual": 6.938893903907228e-18, "status": "pass", "tolerance": 2e-11},
+    {"adapter": "rev-mcmc-orphan-resample", "check": "conjugate_detailed_balance", "residual": 0.0, "status": "pass", "tolerance": 2e-11}
+  ],
+  "fixture": {"candidate_dag_count": 25, "nodes": ["a", "b", "c"], "positive_partition_count": 13},
+  "report_sha256": "417ffd5eb543f8e21987216d4e26e59df6ce73eb9ba3ed2ec94448156677e762",
+  "schema": "ordersmc-adapter-validation-v3",
+  "sources": {
+    "partition_mcmc": "Kuipers and Moffa (2017), DOI 10.1080/01621459.2015.1133426",
+    "rev_mcmc": "Grzegorczyk and Husmeier (2008), DOI 10.1007/s10994-008-5057-7"
+  },
+  "status": "pass"
+}

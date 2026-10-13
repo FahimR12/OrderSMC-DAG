@@ -1,0 +1,51 @@
+{
+  "schema": "ordersmc-v3-resource-freeze-v1",
+  "status": "confirmatory-frozen",
+  "frozen_utc": "2026-09-08T00:00:00Z",
+  "confirmatory_master_seed": 20260904,
+  "pilot": {
+    "result_root": "results/brain-study/v3/seed-20260903-pilot-r2",
+    "profile": "pilot",
+    "planned_datasets": 42,
+    "completed_datasets": 42,
+    "planned_runs": 453,
+    "completed_runs": 453,
+    "failed_runs": 0,
+    "plan_sha256": "80bdda0b4626b3d01d841380f6cd6de35f0723053faa2fa6bd6d49fda8274985",
+    "candidate_audit_status": "complete",
+    "candidate_cells_passed": 14,
+    "candidate_cells_failed": 0,
+    "candidate_audit_raw_sha256": "d45ada1ade93e5cca3b29a41e061c7187155a663e128557472893be993407628",
+    "completion_raw_sha256": "d185d857bebc6b58dbacf9941c94ae06f0635077d6cf8079177c654dfa391742"
+  },
+  "selection_basis": {
+    "used": [
+      "artifact integrity",
+      "cell-level complete-family recall",
+      "candidate preparation cost",
+      "job completion and resource envelope",
+      "sampling reproducibility diagnostics"
+    ],
+    "not_used": [
+      "truth-based graph-recovery metric",
+      "comparison-method ranking",
+      "living-brain outcome"
+    ]
+  },
+  "ordersmc": {
+    "particles": 4096,
+    "num_betas": 100,
+    "mh_steps": 10,
+    "mh_steps_resample": 25,
+    "mpi_ranks": 64
+  },
+  "candidate_policy": {
+    "default_screen_k": 20,
+    "default_parent_pool_max": 30,
+    "high_indegree_screen_k": 10,
+    "high_indegree_parent_pool_max": 15
+  },
+  "execution_config": "execution_v3_confirmatory_v1.json",
+  "execution_config_sha256": "2b8fffc58f8f5feb903d6b17448030e14a16f2676f09f7a77c82e5a011f12ebe",
+  "execution_config_raw_sha256": "7c059b8493b9e7a0f63819bd04cf0a018a602d46f75de6d01dc551e303a09c20"
+}

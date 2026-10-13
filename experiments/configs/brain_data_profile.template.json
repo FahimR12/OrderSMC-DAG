@@ -1,0 +1,54 @@
+{
+  "schema": "ordersmc-brain-data-profile-v1",
+  "status": "template-not-runnable",
+  "study_id": null,
+  "scientific_question": null,
+  "primary_contrast": null,
+  "one_row_represents": null,
+  "one_column_represents": null,
+  "number_of_rows": null,
+  "number_of_variables": null,
+  "variable_types": {
+    "continuous": null,
+    "binary": null,
+    "categorical": null,
+    "categorical_cardinalities": null
+  },
+  "biological_replication": {
+    "subjects_or_animals": null,
+    "sessions_per_subject": null,
+    "trials_per_session": null
+  },
+  "temporal_structure": {
+    "is_time_series": null,
+    "sampling_interval": null,
+    "time_points_per_trial": null,
+    "autocorrelation_expected": null
+  },
+  "experimental_structure": {
+    "observational_or_interventional": null,
+    "conditions": null,
+    "intervention_targets": null,
+    "randomization_unit": null
+  },
+  "data_quality": {
+    "missing_fraction": null,
+    "missingness_mechanism": null,
+    "batch_variables": null,
+    "known_artifacts": null
+  },
+  "preprocessing": {
+    "already_applied": null,
+    "planned_without_network_outcomes": null
+  },
+  "domain_constraints": {
+    "forbidden_edges": null,
+    "required_edges": null,
+    "known_temporal_order": null
+  },
+  "privacy": {
+    "contains_direct_identifiers": null,
+    "may_leave_secure_storage": null,
+    "permitted_aggregate_outputs": null
+  }
+}

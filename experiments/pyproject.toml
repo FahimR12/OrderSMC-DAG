@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ordersmc-experiments"
+version = "0.4.0"
+description = "Lean reproducible experiment harness for the OrderSMC-DAG paper"
+requires-python = ">=3.10"
+dependencies = [
+    "ordersmc-dag>=0.6,<0.7",
+    "networkx>=3.0",
+    "numpy>=1.24",
+    "pandas>=2.0",
+    "scipy>=1.10",
+    "scikit-learn>=1.2",
+]
+
+[project.optional-dependencies]
+test = ["pytest>=7.0"]
+mpi = ["mpi4py>=3.1"]
+
+[project.scripts]
+ordersmc-experiments = "ordersmc_experiments.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+pythonpath = ["src", "../src"]

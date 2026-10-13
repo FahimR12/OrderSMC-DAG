@@ -1,0 +1,35 @@
+{
+  "schema": "ordersmc-mixed-paper-freeze-v2",
+  "status": "confirmatory-frozen",
+  "frozen_utc": "2026-09-03T11:31:00Z",
+  "master_seed": 20260814,
+  "confirmatory_master_seed": 20260815,
+  "parent_freeze_record": "mixed_paper_freeze_v1.json",
+  "parent_freeze_record_raw_sha256": "cd7d85babe36a69687ec59abece2504bff83019c6663d0ae4e0e358439dd7b75",
+  "amendment_stage": "generator-completion-validation-with-inference-outcomes-blinded",
+  "amendment_reason": "A d=50 categorical mechanism still exhausted 100 attempts under the amended 5% extreme-probability cap. The cap duplicates the existing marginal-balance and median-entropy controls and can reject valid moderate-signal mechanisms solely because of tail observations.",
+  "information_used": [
+    "generator completion status",
+    "rejection reason counts",
+    "minimum category marginals",
+    "conditional extreme-probability fractions"
+  ],
+  "information_not_inspected": [
+    "graph recovery",
+    "posterior probabilities",
+    "method comparisons",
+    "runtime comparisons"
+  ],
+  "generator": {
+    "marginal_balance_constraint_retained": true,
+    "median_conditional_entropy_constraint_retained": true,
+    "finite_probability_constraint_retained": true,
+    "extreme_probability_fraction_recorded": true,
+    "extreme_probability_fraction_enforced": false,
+    "all_other_generation_constraints_unchanged": true
+  },
+  "inference_settings_unchanged_from_parent": true,
+  "execution_config": "execution_mixed_paper_v2.json",
+  "execution_config_sha256": "ffaa751c980d9574077b8557b20063ad40eceb4a0046442176c30cd65b8c57d7",
+  "execution_config_raw_sha256": "a47232ddc19c103934b063fee4107ec5263c2514911988baf6627a3c9e28f3a2"
+}
